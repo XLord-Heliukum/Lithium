@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.rid }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            rid: osx-arm64
+            app: true
+          - os: windows-latest
+            rid: win-x64
+            app: false
+          - os: ubuntu-latest
+            rid: linux-x64
+            app: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Publish (self-contained, single-file)
+        shell: bash
+        run: |
+          dotnet publish src/Lithium.Desktop/Lithium.Desktop.csproj \
+            -c Release -r ${{ matrix.rid }} \
+            -p:PublishSingleFile=true -p:SelfContained=true -p:TrimMode=link
+
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+          PUB="$GITHUB_WORKSPACE/src/Lithium.Desktop/bin/Release/net10.0/${{ matrix.rid }}/publish"
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          ZIP="$GITHUB_WORKSPACE/dist/Lithium-${{ matrix.rid }}.zip"
+          rm -f "$ZIP"
+
+          if [ "${{ matrix.app }}" = "true" ]; then
+            APP="$GITHUB_WORKSPACE/dist/Lithium.app"
+            rm -rf "$APP"
+            mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+            cp "$PUB/Lithium" "$APP/Contents/MacOS/Lithium"
+            chmod +x "$APP/Contents/MacOS/Lithium"
+            cat > "$APP/Contents/Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleName</key>          <string>Lithium</string>
+            <key>CFBundleDisplayName</key>   <string>Lithium</string>
+            <key>CFBundleIdentifier</key>    <string>com.xlord.lithium</string>
+            <key>CFBundleVersion</key>       <string>${{ github.ref_name }}</string>
+            <key>CFBundleShortVersionString</key> <string>${{ github.ref_name }}</string>
+            <key>CFBundleExecutable</key>    <string>Lithium</string>
+            <key>CFBundlePackageType</key>   <string>APPL</string>
+            <key>CFBundleInfoDictionaryVersion</key> <string>6.0</string>
+            <key>LSMinimumSystemVersion</key> <string>11.0</string>
+            <key>NSHighResolutionCapable</key> <true/>
+            <key>NSRequiresAquaSystemAppearance</key> <false/>
+          </dict>
+          </plist>
+          PLIST
+            ( cd "$GITHUB_WORKSPACE/dist" && zip -r -q "$(basename "$ZIP")" "Lithium.app" )
+          else
+            ( cd "$PUB" && zip -r -q "$ZIP" . )
+          fi
+
+          echo "::group::artifact"
+          ls -la "$GITHUB_WORKSPACE/dist"
+          echo "::endgroup::"
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/Lithium-${{ matrix.rid }}.zip
