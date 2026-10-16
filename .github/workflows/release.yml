@@ -78,7 +78,7 @@ jobs:
           PLIST
             ( cd "$GITHUB_WORKSPACE/dist" && tar -czf "$(basename "$ARCHIVE")" "Lithium.app" )
           else
-            ( cd "$PUB" && tar -czf "$ARCHIVE" . )
+            ( cd "$GITHUB_WORKSPACE/dist" && tar -czf "$(basename "$ARCHIVE")" -C "$PUB" . )
           fi
 
           echo "::group::artifact"
