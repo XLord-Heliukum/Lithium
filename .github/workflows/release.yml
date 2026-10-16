@@ -48,8 +48,8 @@ jobs:
           set -euo pipefail
           PUB="$GITHUB_WORKSPACE/src/Lithium.Desktop/bin/Release/net10.0/${{ matrix.rid }}/publish"
           mkdir -p "$GITHUB_WORKSPACE/dist"
-          ZIP="$GITHUB_WORKSPACE/dist/Lithium-${{ matrix.rid }}.zip"
-          rm -f "$ZIP"
+          ARCHIVE="$GITHUB_WORKSPACE/dist/Lithium-${{ matrix.rid }}.tar.gz"
+          rm -f "$ARCHIVE"
 
           if [ "${{ matrix.app }}" = "true" ]; then
             APP="$GITHUB_WORKSPACE/dist/Lithium.app"
@@ -76,9 +76,9 @@ jobs:
           </dict>
           </plist>
           PLIST
-            ( cd "$GITHUB_WORKSPACE/dist" && zip -r -q "$(basename "$ZIP")" "Lithium.app" )
+            ( cd "$GITHUB_WORKSPACE/dist" && tar -czf "$(basename "$ARCHIVE")" "Lithium.app" )
           else
-            ( cd "$PUB" && zip -r -q "$ZIP" . )
+            ( cd "$PUB" && tar -czf "$ARCHIVE" . )
           fi
 
           echo "::group::artifact"
@@ -88,4 +88,4 @@ jobs:
       - name: Upload release asset
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/Lithium-${{ matrix.rid }}.zip
+          files: dist/Lithium-${{ matrix.rid }}.tar.gz
