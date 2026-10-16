@@ -1,0 +1,112 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Lithium.Desktop.ViewModels"
+        x:Class="Lithium.Desktop.Views.MainWindow"
+        x:CompileBindings="False"
+        Title="{Binding AppTitle}"
+        Width="980" Height="620" MinWidth="720" MinHeight="480">
+    <DockPanel>
+        <!-- Title / toolbar -->
+        <Border DockPanel.Dock="Top" Background="{DynamicResource SystemAccentColor}" Padding="12,10">
+            <DockPanel>
+                <TextBlock Text="Lithium"
+                           FontSize="18" FontWeight="Bold"
+                           VerticalAlignment="Center" Foreground="White" />
+                <TextBlock Text="{Binding BackendName}"
+                           FontSize="11" VerticalAlignment="Center"
+                           Foreground="White" Opacity="0.8" Margin="10,0,0,0" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <Button x:Name="NewButton" Content="New Bottle" />
+                    <Button x:Name="SettingsButton" Content="Settings" />
+                    <Button x:Name="AboutButton" Content="About" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Status bar -->
+        <Border DockPanel.Dock="Bottom" Background="{DynamicResource SystemChromeLowColor}" Padding="10,6">
+            <DockPanel>
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" />
+                <ProgressBar IsIndeterminate="{Binding IsBusy}"
+                             Width="120" Height="4"
+                             HorizontalAlignment="Right" />
+            </DockPanel>
+        </Border>
+
+        <!-- Body -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" MinWidth="180" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Bottle list -->
+            <ListBox Grid.Column="0"
+                     ItemsSource="{Binding Bottles}"
+                     SelectedItem="{Binding SelectedBottle, Mode=TwoWay}"
+                     x:Name="BottleList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="6">
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding State}" FontSize="11" Opacity="0.65" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <GridSplitter Grid.Column="1" Width="4"
+                          Background="{DynamicResource SystemChromeMediumColor}"
+                          ResizeDirection="Columns" />
+
+            <!-- Detail -->
+            <Grid Grid.Column="2" Margin="14">
+                <!-- Empty state -->
+                <TextBlock Text="Select a bottle on the left, or create a new one."
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Opacity="0.6"
+                           IsVisible="{Binding ShowEmpty}" />
+
+                <!-- Selected bottle -->
+                <Grid IsVisible="{Binding HasSelection}"
+                      RowDefinitions="Auto,Auto,*,Auto">
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="{Binding SelectedBottle.Name}"
+                                   FontSize="22" FontWeight="Bold" />
+                        <TextBlock Text="{Binding SelectedBottle.State}"
+                                   Opacity="0.7" Margin="0,2,0,0" />
+                        <TextBlock Text="{Binding SelectedBottle.Config.EngineId, StringFormat='Engine: {0}'}"
+                                   FontSize="12" Opacity="0.7" Margin="0,2,0,0" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                        <Button Content="Initialize" Command="{Binding InitializeBottleCommand}" />
+                        <Button x:Name="AddProgramButton" Content="Add Program…" />
+                        <Button x:Name="RemoveProgramButton" Content="Remove Selected" />
+                        <Button x:Name="DeleteBottleButton" Content="Delete Bottle" />
+                    </StackPanel>
+
+                    <ListBox Grid.Row="2" Margin="0,12,0,0"
+                             ItemsSource="{Binding SelectedBottle.Programs}"
+                             x:Name="ProgramList">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                               VerticalAlignment="Center" />
+                                    <Button Grid.Column="1" Content="Run"
+                                            Command="{Binding DataContext.RunProgramCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock Grid.Row="3" Text="Double-click a program to launch it."
+                               FontSize="11" Opacity="0.6" Margin="0,8,0,0" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>

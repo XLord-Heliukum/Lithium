@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:consts="using:LithiumKit.Constants"
+        x:Class="Lithium.Desktop.Views.AboutWindow"
+        x:CompileBindings="False"
+        Title="About Lithium"
+        Width="480" Height="300"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock Text="Lithium" FontSize="22" FontWeight="Bold" />
+        <TextBlock Text="{Binding Source={x:Static consts:LithiumConstants.Tagline}}"
+                   TextWrapping="Wrap" Opacity="0.85" />
+
+        <TextBlock TextWrapping="Wrap" Opacity="0.85">
+            Lithium is a cross-platform reimplementation of
+            <Run Text="{Binding Source={x:Static consts:LithiumConstants.UpstreamProject}}" />
+            (originally a macOS-only SwiftUI Wine wrapper), rewritten in C# with
+            .NET and Avalonia so it can run on macOS, Linux and Windows.
+        </TextBlock>
+
+        <TextBlock TextWrapping="Wrap" Opacity="0.7" FontSize="12">
+            Licensed under the GNU General Public License v3.0 — a derivative work of
+            Whisky. Source and license details are available in the repository.
+        </TextBlock>
+
+        <TextBlock Text="{Binding Source={x:Static consts:LithiumConstants.RepositoryUrl}}"
+                   FontSize="12" Opacity="0.7" />
+
+        <Button x:Name="CloseButton" Content="Close"
+                HorizontalAlignment="Right" Margin="0,8,0,0" />
+    </StackPanel>
+</Window>

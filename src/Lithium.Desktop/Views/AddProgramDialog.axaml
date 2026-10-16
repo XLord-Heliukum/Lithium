@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Lithium.Desktop.Views.AddProgramDialog"
+        x:CompileBindings="False"
+        Title="Add Program"
+        Width="480" Height="220"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    <StackPanel Margin="18" Spacing="12">
+        <TextBlock Text="Add a Windows executable to this bottle"
+                   FontSize="14" FontWeight="Bold" />
+        <StackPanel Spacing="4">
+            <TextBlock Text="Executable path (.exe)" />
+            <TextBox x:Name="PathBox" PlaceholderText="C:\Program Files\App\game.exe" />
+        </StackPanel>
+        <StackPanel Spacing="4">
+            <TextBlock Text="Display name (optional)" />
+            <TextBox x:Name="NameBox" PlaceholderText="My App" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button x:Name="CancelButton" Content="Cancel" />
+            <Button x:Name="AddButton" Content="Add" />
+        </StackPanel>
+    </StackPanel>
+</Window>

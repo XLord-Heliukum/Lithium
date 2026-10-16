@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Lithium.Desktop.Views.SettingsWindow"
+        x:CompileBindings="False"
+        Title="Settings"
+        Width="460" Height="240"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    <StackPanel Margin="18" Spacing="14">
+        <TextBlock Text="Settings" FontSize="16" FontWeight="Bold" />
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Preferred Wine executable (optional)" />
+            <TextBox Text="{Binding PreferredWinePath}"
+                     PlaceholderText="/usr/local/bin/wine" />
+        </StackPanel>
+
+        <CheckBox Content="Check for engine updates on launch"
+                  IsChecked="{Binding CheckForUpdates, Mode=TwoWay}" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button x:Name="CancelButton" Content="Cancel" />
+            <Button x:Name="SaveButton" Content="Save" />
+        </StackPanel>
+    </StackPanel>
+</Window>

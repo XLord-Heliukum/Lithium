@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Lithium.Desktop.Views.NewBottleDialog"
+        x:CompileBindings="False"
+        Title="New Bottle"
+        Width="440" Height="360"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    <StackPanel Margin="18" Spacing="12">
+        <TextBlock Text="Create a new bottle" FontSize="16" FontWeight="Bold" />
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Name" />
+            <TextBox Text="{Binding Name}" PlaceholderText="My Game" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Engine" />
+            <ComboBox ItemsSource="{Binding Engines}"
+                      SelectedItem="{Binding SelectedEngine, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Windows version" />
+            <ComboBox ItemsSource="{Binding WindowsVersions}"
+                      SelectedItem="{Binding WindowsVersion, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch" />
+        </StackPanel>
+
+        <CheckBox Content="Esync" IsChecked="{Binding Esync, Mode=TwoWay}" />
+        <CheckBox Content="Retina / HiDPI" IsChecked="{Binding RetinaMode, Mode=TwoWay}" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,8,0,0">
+            <Button x:Name="CancelButton" Content="Cancel" />
+            <Button x:Name="CreateButton" Content="Create" />
+        </StackPanel>
+    </StackPanel>
+</Window>

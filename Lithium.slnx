@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lithium.CLI/Lithium.CLI.csproj" />
+    <Project Path="src/Lithium.Desktop/Lithium.Desktop.csproj" />
+    <Project Path="src/LithiumKit/LithiumKit.csproj" />
+  </Folder>
+</Solution>
