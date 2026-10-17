@@ -19,6 +19,9 @@ jobs:
           - os: macos-latest
             rid: osx-arm64
             app: true
+          - os: macos-latest
+            rid: osx-x64
+            app: true
           - os: windows-latest
             rid: win-x64
             app: false
